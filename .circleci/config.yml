@@ -10,11 +10,9 @@ executors:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASSWORD
 
-
 jobs:
-  cicd-job:
-    executor:
-      name: node/default
+  test:
+    executor: my-exe
     steps:
       - checkout
       - run:
@@ -26,11 +24,6 @@ jobs:
       - run:
           name: run linter
           command: npm run lint
-#
-#      - run:
-#          name: CD-deploy the service
-#          command: curl "https://api.render.com/deploy/srv-cgkkr10rddleudv4ss30?key=Kq-olmuo8DE"
-
 
 workflows:
   my-workflow:
