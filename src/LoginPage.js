@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-// eslint-disable-next-line max-len
-import {utils as XLSXUtils, readFile as readXLSXFile, writeFile as writeXLSXFile} from 'xlsx';
+import db from './config/firebase'; // Update the path if needed
+import {collection, addDoc, query, getDocs, where} from 'firebase/firestore';
 import './LoginPage.css';
 
 const LoginPage = () => {
@@ -23,16 +23,36 @@ const LoginPage = () => {
     } else {
       setResponse('');
     }
-    const existingWorkbook = await readXLSXFile('students_data.xlsx');
-    const sheetName = existingWorkbook.SheetNames[0];
-    const sheet = existingWorkbook.Sheets[sheetName];
+    try {
+      const nameRegex = /^[A-Za-z\s]+$/;
+      if (!nameRegex.test(name)) {
+        // eslint-disable-next-line max-len
+        setResponse('Invalid name. Name should only contain letters and spaces');
+        return;
+      }
+      // Check if name already exists in the 'students' collection
+      // eslint-disable-next-line max-len
+      const nameExistsQuery = query(collection(db, 'students'), where('name', '==', name));
+      const nameExistsSnapshot = await getDocs(nameExistsQuery);
 
-    // eslint-disable-next-line max-len
-    XLSXUtils.sheet_add_json(sheet, [{'Name': name, 'Grade 1': grade1, 'Grade 2': grade2, 'Grade 3': grade3}], {skipHeader: true});
+      if (!nameExistsSnapshot.empty) {
+        setResponse('Student name already exists');
+        return;
+      }
+      // Add the student to the 'students' collection
+      await addDoc(collection(db, 'students'), {
+        name: name,
+        grade1: grade1,
+        grade2: grade2,
+        grade3: grade3,
+      });
 
-    await writeXLSXFile(existingWorkbook, 'students_data.xlsx');
-
-    setResponse('Data added successfully!');
+      setResponse('Data added successfully!');
+    } catch (error) {
+      // eslint-disable-next-line no-undef
+      console.error('Error adding document: ', error);
+      setResponse('Error adding student data.');
+    }
   };
 
   return (
