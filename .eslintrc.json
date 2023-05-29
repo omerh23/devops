@@ -4,6 +4,7 @@
         "es2021": true
     },
     "extends": [
+        "eslint:recommended",
         "plugin:react/recommended",
         "google"
     ],
@@ -13,9 +14,17 @@
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "plugins": [
-        "react"
-    ],
+    "plugins": ["react"],
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
     "rules": {
-    }
+    },
+    "ignorePatterns": [
+        "**/*.css",
+        "**/*.jpg",
+        "**/*.png"
+    ]
 }
