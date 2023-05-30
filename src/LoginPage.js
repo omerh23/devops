@@ -137,7 +137,7 @@ const LoginPage = () => {
           />
         </div>
         <button type="submit">Submit</button>
-        <p className="fonts">{Response}</p>
+        <p className="fonts res">{Response}</p>
       </form>
     </div>
   );
