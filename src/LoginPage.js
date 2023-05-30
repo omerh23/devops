@@ -4,7 +4,9 @@ import {collection, addDoc, query, getDocs, where} from 'firebase/firestore';
 import './LoginPage.css';
 
 const LoginPage = () => {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+
   const [grade1, setGrade1] = useState('');
   const [grade2, setGrade2] = useState('');
   const [grade3, setGrade3] = useState('');
@@ -12,7 +14,10 @@ const LoginPage = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    const grade1Num = parseFloat(grade1);
+    const grade2Num = parseFloat(grade2);
+    const grade3Num = parseFloat(grade3);
+    const fullName = `${firstName} ${lastName}`;
     // eslint-disable-next-line max-len
     if (grade1 < 0 || grade1 > 100 || grade2 < 0 || grade2 > 100 || grade3 < 0 || grade3 > 100) {
       setResponse('Grade should be between 0 to 100');
@@ -20,28 +25,50 @@ const LoginPage = () => {
     } else if (isNaN(grade1) || isNaN(grade2) || isNaN(grade3)) {
       setResponse('Grade should be only numbers');
       return;
+      // eslint-disable-next-line max-len
+    } else if (!Number.isInteger(grade1Num) || !Number.isInteger(grade2Num) || !Number.isInteger(grade3Num)) {
+      setResponse('Grade should be integers');
+      return;
     } else {
       setResponse('');
     }
     try {
       const nameRegex = /^[A-Za-z\s]+$/;
-      if (!nameRegex.test(name)) {
+      if (!nameRegex.test(firstName)) {
         // eslint-disable-next-line max-len
-        setResponse('Invalid name. Name should only contain letters and spaces');
+        setResponse('Invalid first name. first Name should only contain letters and spaces');
         return;
       }
-      // Check if name already exists in the 'students' collection
+      if (!nameRegex.test(lastName)) {
+        // eslint-disable-next-line max-len
+        setResponse('Invalid last Name. last Name should only contain letters and spaces');
+        return;
+      }
+      const upperNameRegex = /^[A-Z][a-z]*$/;
+      if (!upperNameRegex.test(firstName)) {
+        // eslint-disable-next-line max-len
+        setResponse('First name should start with uppercase and the rest in lowercase');
+        return;
+      }
+      if (!upperNameRegex.test(lastName)) {
+        // eslint-disable-next-line max-len
+        setResponse('Last name should start with uppercase and the rest in lowercase');
+        return;
+      }
+      setResponse('Please wait...');
+      // Check if lastName already exists in the 'students' collection
       // eslint-disable-next-line max-len
-      const nameExistsQuery = query(collection(db, 'students'), where('name', '==', name));
+      const nameExistsQuery = query(collection(db, 'students'), where('name', '==', fullName));
       const nameExistsSnapshot = await getDocs(nameExistsQuery);
 
       if (!nameExistsSnapshot.empty) {
-        setResponse('Student name already exists');
+        setResponse('Student Name already exists');
         return;
       }
       // Add the student to the 'students' collection
+
       await addDoc(collection(db, 'students'), {
-        name: name,
+        name: fullName,
         grade1: grade1,
         grade2: grade2,
         grade3: grade3,
@@ -60,12 +87,22 @@ const LoginPage = () => {
       <h1>Login Page</h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <label className="fonts">Name:</label>
+          <label className="fonts">First name:</label>
+          <input
+            type="text"
+            id="Firstname"
+            value={firstName}
+            onChange={(event) => setFirstName(event.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label className="fonts">Last name:</label>
           <input
             type="text"
             id="name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
+            value={lastName}
+            onChange={(event) => setLastName(event.target.value)}
             required
           />
         </div>
