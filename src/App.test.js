@@ -46,6 +46,3 @@ test('displays error message when the grade is not integers', () => {
   // eslint-disable-next-line no-undef
   expect(responseMessage.textContent).toBe('Grade should be integers');
 });
-
-
-
