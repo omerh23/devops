@@ -18,43 +18,33 @@ const LoginPage = () => {
     const grade2Num = parseFloat(grade2);
     const grade3Num = parseFloat(grade3);
     const fullName = `${firstName} ${lastName}`;
-    // eslint-disable-next-line max-len
-    if (grade1 < 0 || grade1 > 100 || grade2 < 0 || grade2 > 100 || grade3 < 0 || grade3 > 100) {
-      setResponse('Grade should be between 0 to 100');
-      return;
-    } else if (isNaN(grade1) || isNaN(grade2) || isNaN(grade3)) {
-      setResponse('Grade should be only numbers');
-      return;
-      // eslint-disable-next-line max-len
-    } else if (!Number.isInteger(grade1Num) || !Number.isInteger(grade2Num) || !Number.isInteger(grade3Num)) {
-      setResponse('Grade should be integers');
-      return;
-    } else {
-      setResponse('');
-    }
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const upperNameRegex = /^[A-Z][a-z]*$/;
     try {
-      const nameRegex = /^[A-Za-z\s]+$/;
-      if (!nameRegex.test(firstName)) {
+      // eslint-disable-next-line max-len
+      if (grade1 < 0 || grade1 > 100 || grade2 < 0 || grade2 > 100 || grade3 < 0 || grade3 > 100) {
+        setResponse('Grade should be between 0 to 100');
+        return;
+      } else if (isNaN(grade1) || isNaN(grade2) || isNaN(grade3)) {
+        setResponse('Grade should be only numbers');
+        return;
+        // eslint-disable-next-line max-len
+      } else if (!Number.isInteger(grade1Num) || !Number.isInteger(grade2Num) || !Number.isInteger(grade3Num)) {
+        setResponse('Grade should be integers');
+        return;
+        // eslint-disable-next-line max-len
+      } else if (!nameRegex.test(firstName) || !upperNameRegex.test(firstName) ) {
         // eslint-disable-next-line max-len
         setResponse('Invalid first name. first Name should only contain letters and spaces');
         return;
-      }
-      if (!nameRegex.test(lastName)) {
-        // eslint-disable-next-line max-len
-        setResponse('Invalid last Name. last Name should only contain letters and spaces');
+      } else if (!nameRegex.test(lastName) ||!upperNameRegex.test(lastName) ) {
+      // eslint-disable-next-line max-len
+        setResponse('Invalid last name. last Name should only contain letters and spaces');
         return;
+      } else {
+        setResponse('');
       }
-      const upperNameRegex = /^[A-Z][a-z]*$/;
-      if (!upperNameRegex.test(firstName)) {
-        // eslint-disable-next-line max-len
-        setResponse('First name should start with uppercase and the rest in lowercase');
-        return;
-      }
-      if (!upperNameRegex.test(lastName)) {
-        // eslint-disable-next-line max-len
-        setResponse('Last name should start with uppercase and the rest in lowercase');
-        return;
-      }
+
       setResponse('Please wait...');
       // Check if lastName already exists in the 'students' collection
       // eslint-disable-next-line max-len
@@ -87,17 +77,17 @@ const LoginPage = () => {
       <h1>Login Page</h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <label className="fonts">First name:</label>
+          <label className="fonts" htmlFor="firstname">First name:</label>
           <input
             type="text"
-            id="Firstname"
+            id="firstname"
             value={firstName}
             onChange={(event) => setFirstName(event.target.value)}
             required
           />
         </div>
         <div>
-          <label className="fonts">Last name:</label>
+          <label className="fonts" htmlFor="Last name">Last name:</label>
           <input
             type="text"
             id="name"
@@ -107,7 +97,7 @@ const LoginPage = () => {
           />
         </div>
         <div>
-          <label className="fonts">Grade 1:</label>
+          <label className="fonts" htmlFor="grade1">Grade 1:</label>
           <input
             type="text"
             id="grade1"
@@ -117,7 +107,7 @@ const LoginPage = () => {
           />
         </div>
         <div>
-          <label className="fonts">Grade 2:</label>
+          <label className="fonts" htmlFor="grade2">Grade 2:</label>
           <input
             type="text"
             id="grade2"
@@ -127,7 +117,7 @@ const LoginPage = () => {
           />
         </div>
         <div>
-          <label className="fonts">Grade 3:</label>
+          <label className="fonts" htmlFor="grade3">Grade 3:</label>
           <input
             type="text"
             id="grade3"
@@ -136,8 +126,8 @@ const LoginPage = () => {
             required
           />
         </div>
-        <button type="submit">Submit</button>
-        <p className="fonts res">{Response}</p>
+        <button type="submit" data-testid="submit-button">Submit</button>
+        <p className="fonts res" data-testid="response-message">{Response}</p>
       </form>
     </div>
   );
