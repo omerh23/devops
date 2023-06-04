@@ -35,11 +35,11 @@ const LoginPage = () => {
         // eslint-disable-next-line max-len
       } else if (!nameRegex.test(firstName) || !upperNameRegex.test(firstName) ) {
         // eslint-disable-next-line max-len
-        setResponse('Invalid first name. first Name should only contain letters and spaces');
+        setResponse('First Name should only contain letters, start with uppercase and the rest in lowercase');
         return;
       } else if (!nameRegex.test(lastName) ||!upperNameRegex.test(lastName) ) {
       // eslint-disable-next-line max-len
-        setResponse('Invalid last name. last Name should only contain letters and spaces');
+        setResponse('Last Name should only contain letters, start with uppercase and the rest in lowercase');
         return;
       } else {
         setResponse('');
@@ -48,7 +48,7 @@ const LoginPage = () => {
       setResponse('Please wait...');
       // Check if lastName already exists in the 'students' collection
       // eslint-disable-next-line max-len
-      const nameExistsQuery = query(collection(db, 'students'), where('name', '==', fullName));
+      const nameExistsQuery = query(collection(db, 'students'), where('full_name', '==', fullName));
       const nameExistsSnapshot = await getDocs(nameExistsQuery);
 
       if (!nameExistsSnapshot.empty) {
@@ -58,7 +58,7 @@ const LoginPage = () => {
       // Add the student to the 'students' collection
 
       await addDoc(collection(db, 'students'), {
-        name: fullName,
+        full_name: fullName,
         grade1: grade1,
         grade2: grade2,
         grade3: grade3,
